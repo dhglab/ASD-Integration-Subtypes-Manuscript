@@ -18,10 +18,10 @@ resultsDir <- "../results/"
 regressCovariates_mRNA <- function(datExpr,datMeta,numSeqStatPCs) {
 
 	# regress out technical covariates (RIN, Brain Bank, Batch, Sequencing Stats) and Biological (Age, Sex, Region) from data 
-	condition <- 2-as.numeric(as.factor(datMeta[,"ASD.CTL"]))
+	condition <- 2-as.numeric(as.factor(datMeta[,"Diagnosis"]))
 	age <- as.numeric(datMeta[,"Age"])
 	sex <- as.numeric(as.factor(datMeta[,"Sex"]))-1
-	region <- as.numeric(as.factor(datMeta[,"RegionID"]))-1
+	region <- as.numeric(as.factor(datMeta[,"Region"]))-1
 	RIN <- as.numeric(datMeta[,"RIN"])
 	bank <- as.numeric(as.factor(datMeta[,"BrainBank"]))-1
 	
@@ -67,14 +67,14 @@ regressCovariates_miRNA <- function(datExpr,datMeta) {
 
 	# regress out technical covariates (RIN, Brain Bank, Exon proportion) and Biological (Age, Sex, Region) from data                                                                                                                                  
 	condition <- 2-as.numeric(as.factor(datMeta[,"Diagnosis"]))
-	age <- as.numeric(datMeta[,"Age..yrs."])
+	age <- as.numeric(datMeta[,"Age"])
 	sex <- as.numeric(as.factor(datMeta[,"Sex"]))-1
 	region <- as.numeric(as.factor(datMeta[,"Region"]))-1
 	RIN <- as.numeric(datMeta[,"RIN"])
-	bank <- as.numeric(as.factor(datMeta[,"Brain.bank"]))-1
+	bank <- as.numeric(as.factor(datMeta[,"BrainBank"]))-1
 	ExonProp <- as.numeric(datMeta[,"Proportion.of.exonic.mRNA.reads"])
 	SeqDepth <- log10(datMeta[,"Sequencing.depth"])
-	PMI <- as.numeric(datMeta[,"PMI..hrs."])
+	PMI <- as.numeric(datMeta[,"PMI"])
 
 	regvars <- as.data.frame(cbind(condition,age,sex,region,RIN,bank,ExonProp,SeqDepth,PMI))
 	
@@ -103,16 +103,15 @@ regressCovariates_Ace <- function(datAce,datMeta) {
 	condition <- 2-as.numeric(as.factor(datMeta[,"Diagnosis"]))
 	age <- as.numeric(datMeta[,"Age"])
 	sex <- as.numeric(as.factor(datMeta[,"Sex"]))-1
-	region <- as.numeric(as.factor(datMeta[,"Region_Fixed"]))-1
+	region <- as.numeric(as.factor(datMeta[,"Region"]))-1
 	bank <- as.numeric(as.factor(datMeta[,"BrainBank"]))-1
-	peakNum <- as.numeric(datMeta[,"PeakNum"])
 	FRIP <- as.numeric(datMeta[,"FRIPFract"])
 	Dup <- as.numeric(datMeta[,"DupFract"])
 	Align <- as.numeric(datMeta[,"AlignFract"])
-	CET <- datMeta[,"CET_Filled"]
+	CET <- datMeta[,"CET_Fill_Missing"]
 	
 
-	regvars <- as.data.frame(cbind(condition, sex, region, age, CET, bank, peakNum, FRIP, Dup, Align))
+	regvars <- as.data.frame(cbind(condition, sex, region, age, CET, bank, FRIP, Dup, Align))
 	
 	## Run the regression and make the adjusted FPKM matrix via matrix multiplication                                                                                                                                       
 
@@ -139,8 +138,8 @@ regressCovariates_Meth <- function(datMeth,datMeta) {
 	condition <- 2-as.numeric(as.factor(datMeta[,"Diagnosis"]))
 	age <- as.numeric(datMeta[,"Age"])
 	sex <- as.numeric(as.factor(datMeta[,"Sex"]))-1
-	region <- as.numeric(as.factor(datMeta[,"BrainRegion_update"]))-1
-	bank <- as.numeric(as.factor(datMeta[,"BrainCentre.M"]))-1
+	region <- as.numeric(as.factor(datMeta[,"Region"]))-1
+	bank <- as.numeric(as.factor(datMeta[,"BrainBank"]))-1
 	batch <- as.numeric(as.factor(datMeta[,"Batch"]))-1
 	CET <- as.numeric(datMeta[,"CET"])
 
@@ -184,8 +183,8 @@ Run_SNF <- function(datExpr_mRNA, datExpr_miRNA, datMeth, datAce, K, alpha, T, C
 	group_Fused <- spectralClustering(W_Fused, C); 
 	
 	# Orient SNF group 2 to be the "convergent ASD" group to match manuscript
-	group_Fused_1_CTL <- length(group_Fused[group_Fused == 1 & datMeta[,"ASD.CTL"] == "CTL"])
-	group_Fused_2_CTL <- length(group_Fused[group_Fused == 2 & datMeta[,"ASD.CTL"] == "CTL"])
+	group_Fused_1_CTL <- length(group_Fused[group_Fused == 1 & datMeta[,"Diagnosis"] == "CTL"])
+	group_Fused_2_CTL <- length(group_Fused[group_Fused == 2 & datMeta[,"Diagnosis"] == "CTL"])
 	if (group_Fused_2_CTL > group_Fused_1_CTL) {
 		group_Fused = (C + 1) - group_Fused
 	}

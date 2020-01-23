@@ -18,10 +18,10 @@ resultsDir <- "../results/"
 regressCovariates_mRNA <- function(datExpr,datMeta,numSeqStatPCs) {
 
 	# regress out technical covariates (RIN, Brain Bank, Batch, Sequencing Stats) and Biological (Age, Sex, Region) from data 
-	condition <- 2-as.numeric(as.factor(datMeta[,"ASD.CTL"]))
+	condition <- 2-as.numeric(as.factor(datMeta[,"Diagnosis"]))
 	age <- as.numeric(datMeta[,"Age"])
 	sex <- as.numeric(as.factor(datMeta[,"Sex"]))-1
-	region <- as.numeric(as.factor(datMeta[,"RegionID"]))-1
+	region <- as.numeric(as.factor(datMeta[,"Region"]))-1
 	RIN <- as.numeric(datMeta[,"RIN"])
 	bank <- as.numeric(as.factor(datMeta[,"BrainBank"]))-1
 	
@@ -67,14 +67,14 @@ regressCovariates_miRNA <- function(datExpr,datMeta) {
 
 	# regress out technical covariates (RIN, Brain Bank, Exon proportion) and Biological (Age, Sex, Region) from data                                                                                                                                  
 	condition <- 2-as.numeric(as.factor(datMeta[,"Diagnosis"]))
-	age <- as.numeric(datMeta[,"Age..yrs."])
+	age <- as.numeric(datMeta[,"Age"])
 	sex <- as.numeric(as.factor(datMeta[,"Sex"]))-1
 	region <- as.numeric(as.factor(datMeta[,"Region"]))-1
 	RIN <- as.numeric(datMeta[,"RIN"])
-	bank <- as.numeric(as.factor(datMeta[,"Brain.bank"]))-1
+	bank <- as.numeric(as.factor(datMeta[,"BrainBank"]))-1
 	ExonProp <- as.numeric(datMeta[,"Proportion.of.exonic.mRNA.reads"])
 	SeqDepth <- log10(datMeta[,"Sequencing.depth"])
-	PMI <- as.numeric(datMeta[,"PMI..hrs."])
+	PMI <- as.numeric(datMeta[,"PMI"])
 
 	regvars <- as.data.frame(cbind(condition,age,sex,region,RIN,bank,ExonProp,SeqDepth,PMI))
 	
@@ -103,16 +103,15 @@ regressCovariates_Ace <- function(datAce,datMeta) {
 	condition <- 2-as.numeric(as.factor(datMeta[,"Diagnosis"]))
 	age <- as.numeric(datMeta[,"Age"])
 	sex <- as.numeric(as.factor(datMeta[,"Sex"]))-1
-	region <- as.numeric(as.factor(datMeta[,"Region_Fixed"]))-1
+	region <- as.numeric(as.factor(datMeta[,"Region"]))-1
 	bank <- as.numeric(as.factor(datMeta[,"BrainBank"]))-1
-	peakNum <- as.numeric(datMeta[,"PeakNum"])
 	FRIP <- as.numeric(datMeta[,"FRIPFract"])
 	Dup <- as.numeric(datMeta[,"DupFract"])
 	Align <- as.numeric(datMeta[,"AlignFract"])
-	CET <- datMeta[,"CET_Filled"]
+	CET <- datMeta[,"CET_Fill_Missing"]
 	
 
-	regvars <- as.data.frame(cbind(condition, sex, region, age, CET, bank, peakNum, FRIP, Dup, Align))
+	regvars <- as.data.frame(cbind(condition, sex, region, age, CET, bank, FRIP, Dup, Align))
 	
 	## Run the regression and make the adjusted FPKM matrix via matrix multiplication                                                                                                                                       
 
@@ -139,8 +138,8 @@ regressCovariates_Meth <- function(datMeth,datMeta) {
 	condition <- 2-as.numeric(as.factor(datMeta[,"Diagnosis"]))
 	age <- as.numeric(datMeta[,"Age"])
 	sex <- as.numeric(as.factor(datMeta[,"Sex"]))-1
-	region <- as.numeric(as.factor(datMeta[,"BrainRegion_update"]))-1
-	bank <- as.numeric(as.factor(datMeta[,"BrainCentre.M"]))-1
+	region <- as.numeric(as.factor(datMeta[,"Region"]))-1
+	bank <- as.numeric(as.factor(datMeta[,"BrainBank"]))-1
 	batch <- as.numeric(as.factor(datMeta[,"Batch"]))-1
 	CET <- as.numeric(datMeta[,"CET"])
 
@@ -418,7 +417,7 @@ names(DAR_Loadings_Ace_PC1_Z) <- colnames(datAce_GH.reg.stdNorm.DAR)
 
 ## Orient the PC loadings so that control is negative and ASD is positive
 # mRNA
-mRNA_beta <- summary(lm(DEG_Loadings_mRNA_PC1_Z ~ datMeta_mRNA[,"ASD.CTL"]))$coefficients[2,1]
+mRNA_beta <- summary(lm(DEG_Loadings_mRNA_PC1_Z ~ datMeta_mRNA[,"Diagnosis"]))$coefficients[2,1]
 if (mRNA_beta > 0) {
 	DEG_Loadings_mRNA_PC1_Z = -1 * DEG_Loadings_mRNA_PC1_Z
 }
@@ -546,7 +545,7 @@ Group2_combined <-c(Samps_group_2,group3_type1[[2]],group3_type2[[2]],group3_typ
 # Group 1 ASD = Disparate Subtype
 # Group 2 ASD = Convergent Subtype
 
-ASD_samps <- union(rownames(datMeta_mRNA[datMeta_mRNA[,"ASD.CTL"]=="ASD",]),union(rownames(datMeta_miRNA[datMeta_miRNA[,"Diagnosis"]=="ASD",]),union(rownames(datMeta_methylation[datMeta_methylation[,"Diagnosis"]=="ASD",]),rownames(datMeta_acetylation[datMeta_acetylation[,"Diagnosis"]=="ASD",]))))
+ASD_samps <- union(rownames(datMeta_mRNA[datMeta_mRNA[,"Diagnosis"]=="ASD",]),union(rownames(datMeta_miRNA[datMeta_miRNA[,"Diagnosis"]=="ASD",]),union(rownames(datMeta_methylation[datMeta_methylation[,"Diagnosis"]=="ASD",]),rownames(datMeta_acetylation[datMeta_acetylation[,"Diagnosis"]=="ASD",]))))
 
 subtype_assign <- cbind(c(Group1_combined,Group2_combined),c(rep("Group1",length(Group1_combined)),rep("Group2",length(Group2_combined))))
 subtype_assign[,2][!(subtype_assign[,1] %in% ASD_samps)] <- "Control"

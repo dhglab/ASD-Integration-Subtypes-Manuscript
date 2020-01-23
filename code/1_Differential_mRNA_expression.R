@@ -39,11 +39,11 @@ runDEG <- function(datExpr,datMeta,processedDataDir,analysisName) {
 	}
 
 	## Set up covariates for linear mixed effects model
-	biolrep <- as.numeric(as.factor(datMeta[,"BrainID"]))
-	condition <- 2-as.numeric(as.factor(datMeta[,"ASD.CTL"]))
+	biolrep <- as.numeric(as.factor(datMeta[,"Brain.ID"]))
+	condition <- 2-as.numeric(as.factor(datMeta[,"Diagnosis"]))
 	age <- as.numeric(datMeta[,"Age"])
 	sex <- as.numeric(as.factor(datMeta[,"Sex"]))-1
-	region <- as.numeric(as.factor(datMeta[,"RegionID"]))-1
+	region <- as.numeric(as.factor(datMeta[,"Region"]))-1
 	batch2 <- as.numeric(datMeta[,"SeqBatch"]=="batch2")
 	batch3 <- as.numeric(datMeta[,"SeqBatch"]=="batch3")
 	RIN <- as.numeric(datMeta[,"RIN"])

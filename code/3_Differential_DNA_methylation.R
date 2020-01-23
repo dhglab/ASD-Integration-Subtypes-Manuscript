@@ -27,12 +27,12 @@ runlme <- function(thisdat,expression) {
 runDMG <- function(datMeth,datMeta,processedDataDir,analysisName) {
 
 	## Set up covariates for linear mixed effects model
-	biolrep <- as.numeric(as.factor(datMeta[,"newBrainBankID"]))
+	biolrep <- as.numeric(as.factor(datMeta[,"Brain.ID"]))
 	condition <- 2-as.numeric(as.factor(datMeta[,"Diagnosis"]))
 	sex <- as.numeric(as.factor(datMeta[,"Sex"]))-1
-	region <- as.numeric(as.factor(datMeta[,"BrainRegion_update"]))-1
+	region <- as.numeric(as.factor(datMeta[,"Region"]))-1
 	batch <- as.numeric(datMeta[,"Batch"])-1
-	bank <- as.numeric(as.factor(datMeta[,"BrainCentre.M"]))-1
+	bank <- as.numeric(as.factor(datMeta[,"BrainBank"]))-1
 	age <- as.numeric(datMeta[,"Age"])
 	CET <- as.numeric(datMeta[,"CET"])
 

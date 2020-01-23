@@ -2,7 +2,7 @@ AN00493_ba9	SNF_group_2
 AN01570_ba41-42-22	SNF_group_1
 AN01971_ba9	SNF_group_2
 AN06420_ba9	SNF_group_1
-AN08043_ba41-42-22	SNF_group_2
+AN08043_ba41-42-22	SNF_group_1
 AN08161_ba41-42-22	SNF_group_1
 AN08166_ba9	SNF_group_1
 AN08792_ba41-42-22	SNF_group_2

@@ -29,14 +29,14 @@ runDEG <- function(datExpr,datMeta,processedDataDir,analysisName) {
 	## Set up covariates for linear mixed effects model
 	biolrep <- as.numeric(as.factor(datMeta[,"Brain.ID"]))
 	condition <- 2-as.numeric(as.factor(datMeta[,"Diagnosis"]))
-	age <- as.numeric(datMeta[,"Age..yrs."])
+	age <- as.numeric(datMeta[,"Age"])
 	sex <- as.numeric(as.factor(datMeta[,"Sex"]))-1
 	region <- as.numeric(as.factor(datMeta[,"Region"]))-1
 	RIN <- as.numeric(datMeta[,"RIN"])
-	bank <- as.numeric(as.factor(datMeta[,"Brain.bank"]))-1
+	bank <- as.numeric(as.factor(datMeta[,"BrainBank"]))-1
 	ExonProp <- as.numeric(datMeta[,"Proportion.of.exonic.mRNA.reads"])
 	Depth <- log10(as.numeric(datMeta[,"Sequencing.depth"]))
-	PMI <- as.numeric(datMeta[,"PMI..hrs."])
+	PMI <- as.numeric(datMeta[,"PMI"])
 
 	varmat <- cbind(condition, age, sex, region, RIN, bank, ExonProp, Depth, PMI)
 	rownames(varmat) <- rownames(datMeta)

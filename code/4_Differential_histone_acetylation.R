@@ -27,19 +27,18 @@ runlme <- function(thisdat,expression) {
 runDAR <- function(datAce,datMeta,processedDataDir,analysisName) {
 
 	## Set up covariates for linear mixed effects model
-	biolrep <- as.numeric(as.factor(datMeta[,"BrainID"]))
+	biolrep <- as.numeric(as.factor(datMeta[,"Brain.ID"]))
 	condition <- 2-as.numeric(as.factor(datMeta[,"Diagnosis"]))
 	age <- as.numeric(datMeta[,"Age"])
 	sex <- as.numeric(as.factor(datMeta[,"Sex"]))-1
-	region <- as.numeric(as.factor(datMeta[,"Region_Fixed"]))-1
-	CET <- as.numeric(datMeta[,"CET_Filled"])
+	region <- as.numeric(as.factor(datMeta[,"Region"]))-1
+	CET <- as.numeric(datMeta[,"CET_Fill_Missing"])
 	Bank <- as.numeric(as.factor(datMeta[,"BrainBank"]))-1
-	peakNum <- as.numeric(datMeta[,"PeakNum"])
 	FRIP <- as.numeric(datMeta[,"FRIPFract"])
 	Dup <- as.numeric(datMeta[,"DupFract"])
 	Align <- as.numeric(datMeta[,"AlignFract"])
 
-	varmat <- cbind(condition, age, sex, region, CET, Bank, peakNum, FRIP, Dup, Align)
+	varmat <- cbind(condition, age, sex, region, CET, Bank, FRIP, Dup, Align)
 	rownames(varmat) <- rownames(datMeta)
 		
 	## LME
